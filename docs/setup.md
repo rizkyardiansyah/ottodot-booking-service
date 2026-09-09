@@ -51,7 +51,7 @@ DATABASE_URL=postgres://ottodot:ottodot@localhost:5443/ottodot
 
 ## Migrations
 
-Plain `.sql` files applied in filename order by `scripts/migrate.ts` (~30 lines). Applied migrations tracked in `schema_migrations` table.
+Plain `.sql` files applied in filename order by `scripts/migrate.ts` (~45 lines). Applied migrations tracked in `schema_migrations` table.
 
 ## `pnpm db:reset` behavior
 
@@ -93,18 +93,26 @@ Full recreate every time. Idempotent.
 │   ├── testing.md
 │   └── setup.md
 ├── app/
+│   ├── layout.tsx
+│   ├── globals.css
 │   ├── page.tsx                    — parent booking flow
-│   ├── admin/page.tsx              — class list with occupancy
-│   ├── admin/[classId]/page.tsx    — roster view
+│   ├── _components/
+│   │   └── parent-flow.tsx         — client component, 3-stage parent flow
+│   ├── admin/
+│   │   ├── page.tsx                — class list with occupancy
+│   │   └── [classId]/page.tsx      — roster view
 │   └── actions/
 │       ├── booking.ts              — createBooking
 │       ├── payment.ts              — confirmPayment
-│       └── roster.ts               — listAvailableClasses, getClassRoster, getBookingStatus
+│       ├── roster.ts               — listAvailableClasses, listAllClasses, getBookingStatus, getClassRoster
+│       ├── students.ts             — listStudents
+│       └── types.ts                — ActionResult + shared shapes
 ├── lib/
 │   └── db.ts                       — shared postgres.js pool
 ├── migrations/
 │   └── 001_init.sql
 ├── scripts/
+│   ├── env.ts                      — .env.local loader for standalone scripts
 │   ├── migrate.ts
 │   ├── seed.ts
 │   └── reset.ts
@@ -117,5 +125,7 @@ Full recreate every time. Idempotent.
 ├── package.json
 ├── tsconfig.json
 ├── vitest.config.ts
-└── next.config.js
+├── next.config.js
+├── postcss.config.js
+└── tailwind.config.ts
 ```
