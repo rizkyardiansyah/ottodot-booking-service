@@ -15,12 +15,23 @@ export type ConfirmPaymentData =
   | { status: 'CONFIRMED' }
   | { status: 'PAYMENT_FAILED'; reason: 'PAYMENT_DECLINED' | 'CLASS_FULL' };
 
+export type StudentOption = {
+  id: string;
+  name: string;
+  parentName: string;
+};
+
 export type AvailableClass = {
   id: string;
   name: string;
   startsAt: string;
   capacity: number;
   confirmedCount: number;
+};
+
+/** Admin view: every class regardless of status, with live occupancy. */
+export type ClassOccupancy = AvailableClass & {
+  status: string;
 };
 
 export type BookingStatusView = {

@@ -5,6 +5,7 @@ import type {
   ActionResult,
   AvailableClass,
   BookingStatusView,
+  ClassOccupancy,
   ClassRoster,
 } from './types';
 
@@ -38,6 +39,40 @@ export async function listAvailableClasses(): Promise<
       startsAt: (r.starts_at as Date).toISOString(),
       capacity: r.capacity,
       confirmedCount: r.confirmed_count,
+    })),
+  };
+}
+
+/**
+ * Admin class list: every class (any status) with its live CONFIRMED count,
+ * so the roster view can show `N / capacity` and flag full classes.
+ */
+export async function listAllClasses(): Promise<
+  ActionResult<ClassOccupancy[]>
+> {
+  const rows = await sql`
+    SELECT
+      c.id,
+      c.name,
+      c.starts_at,
+      c.capacity,
+      c.status,
+      COUNT(b.id) FILTER (WHERE b.status = 'CONFIRMED')::int AS confirmed_count
+    FROM classes c
+    LEFT JOIN bookings b ON b.class_id = c.id
+    GROUP BY c.id
+    ORDER BY c.starts_at
+  `;
+
+  return {
+    ok: true,
+    data: rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      startsAt: (r.starts_at as Date).toISOString(),
+      capacity: r.capacity,
+      confirmedCount: r.confirmed_count,
+      status: r.status,
     })),
   };
 }
