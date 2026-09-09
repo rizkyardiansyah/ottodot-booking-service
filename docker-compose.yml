@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ottodot
+      POSTGRES_PASSWORD: ottodot
+      POSTGRES_DB: ottodot
+    ports:
+      - "5443:5432" # host:container. 5443 chosen to avoid common local conflicts.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ottodot"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
